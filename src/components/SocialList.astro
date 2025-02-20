@@ -1,99 +1,104 @@
+---
 import { Icon } from "astro-icon/components";
-/**
-	Uses https://www.astroicon.dev/getting-started/
-	Find icons via guide: https://www.astroicon.dev/guides/customization/#open-source-icon-sets
-	Only installed pack is: @iconify-json/mdi
-*/
-const socialLinks: {
-	friendlyName: string;
-	isWebmention?: boolean;
-	link: string;
-	name: string;
-	type?: 'social' | 'friend';
-}[] = [
-	{
-		friendlyName: "Github",
-		link: "https://github.com/faust6312",
-		name: "mdi:github",
-		type: 'social'
-	},
-	{
-		friendlyName: "Bilibili",
-		link: "https://space.bilibili.com/237593169",
-		name: "bilibili",
-		type: 'social'
-	},
-	{
-		friendlyName: "Nodeseek",
-		link: "https://www.nodeseek.com/space/24280",
-		name: "nodeseek",
-		type: 'social'
-	},
-	{
-		friendlyName: "linux.do",
-		link: "https://linux.do/u/faust6312",
-		name: "linux.do",
-		type: 'social'
-	},
-	{
-		friendlyName: "wyy",
-		link: "https://music.163.com/#/user/home?id=449873508",
-		name: "wyy",
-		type: 'social'
-	},
-	{
-		friendlyName: "f1",
-		link: "https://www.cloudofficial.top",
-		name: "f1",
-		type: 'friend'
-	},
+
+interface SocialLink {
+    friendlyName: string;
+    isWebmention?: boolean;
+    link: string;
+    name: string;
+    type: 'social' | 'friend';
+}
+
+const socialLinks: SocialLink[] = [
+    {
+        friendlyName: "Github",
+        link: "https://github.com/faust6312",
+        name: "mdi:github",
+        type: 'social'
+    },
+    {
+        friendlyName: "Bilibili",
+        link: "https://space.bilibili.com/237593169",
+        name: "bilibili",
+        type: 'social'
+    },
+    {
+        friendlyName: "Nodeseek",
+        link: "https://www.nodeseek.com/space/24280",
+        name: "nodeseek",
+        type: 'social'
+    },
+    {
+        friendlyName: "linux.do",
+        link: "https://linux.do/u/faust6312",
+        name: "linux.do",
+        type: 'social'
+    },
+    {
+        friendlyName: "wyy",
+        link: "https://music.163.com/#/user/home?id=449873508",
+        name: "wyy",
+        type: 'social'
+    },
+    {
+        friendlyName: "f1",
+        link: "https://www.cloudofficial.top",
+        name: "f1",
+        type: 'friend'
+    }
 ];
 
-// 分离社交链接和友情链接
 const socialMediaLinks = socialLinks.filter(link => link.type === 'social');
 const friendLinks = socialLinks.filter(link => link.type === 'friend');
 ---
-<div class="space-y-4">
-	<!-- 社交媒体链接 -->
-	<div class="mt-8 flex flex-wrap items-end justify-end gap-x-2 text-right">
-		<ul class="flex flex-1 items-center gap-x-2 sm:flex-initial">
-			{
-				socialMediaLinks.map(({ friendlyName, isWebmention, link, name }) => (
-					<li class="flex">
-						<a
-							class="inline-block sm:hover:text-link"
-							href={link}
-							rel={`noreferrer ${isWebmention ? "me authn" : ""}`}
-							target="_blank"
-						>
-							<Icon aria-hidden="true" class="h-8 w-8" focusable="false" name={name} />
-							<span class="sr-only">{friendlyName}</span>
-						</a>
-					</li>
-				))
-			}
-		</ul>
-	</div>
 
-	<!-- 友情链接 -->
-	<div class="mt-4 flex flex-wrap items-end justify-end gap-x-2 text-right">
-		<p class="text-sm text-gray-600">友链</p>
-		<ul class="flex flex-1 items-center gap-x-2 sm:flex-initial">
-			{
-				friendLinks.map(({ friendlyName, isWebmention, link, name }) => (
-					<li class="flex">
-						<a
-							class="inline-block sm:hover:text-link"
-							href={link}
-							rel={`noreferrer ${isWebmention ? "me authn" : ""}`}
-							target="_blank"
-						>
-							<Icon aria-hidden="true" class="h-8 w-8" focusable="false" name={name} />
-							<span class="sr-only">{friendlyName}</span>
-						</a>
-					</li>
-				))
-			}
-		</ul>
-	</div>
-</div>
+<section class="space-y-4">
+    <div class="flex flex-wrap items-end justify-end gap-x-2">
+        <ul class="flex flex-1 items-center gap-x-2 sm:flex-initial">
+            {socialMediaLinks.map(({ friendlyName, isWebmention, link, name }) => (
+                <li>
+                    <a
+                        class="inline-block sm:hover:text-link"
+                        href={link}
+                        rel={`noreferrer ${isWebmention ? "me authn" : ""}`}
+                        target="_blank"
+                    >
+                        <Icon 
+                            aria-hidden="true" 
+                            class="h-8 w-8" 
+                            focusable="false" 
+                            name={name} 
+                        />
+                        <span class="sr-only">{friendlyName}</span>
+                    </a>
+                </li>
+            ))}
+        </ul>
+    </div>
+
+    {friendLinks.length > 0 && (
+        <div class="flex flex-wrap items-end justify-end gap-x-2">
+            <p class="text-sm text-gray-600">友情链接</p>
+            <ul class="flex flex-1 items-center gap-x-2 sm:flex-initial">
+                {friendLinks.map(({ friendlyName, isWebmention, link, name }) => (
+                    <li>
+                        <a
+                            class="inline-block sm:hover:text-link"
+                            href={link}
+                            rel={`noreferrer ${isWebmention ? "me authn" : ""}`}
+                            target="_blank"
+                        >
+                            <Icon 
+                                aria-hidden="true" 
+                                class="h-8 w-8" 
+                                focusable="false" 
+                                name={name} 
+                            />
+                            <span class="sr-only">{friendlyName}</span>
+                        </a>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    )}
+</section>
