@@ -1,6 +1,5 @@
 ---
 import { Icon } from "astro-icon/components";
-
 interface SocialLink {
     friendlyName: string;
     isWebmention?: boolean;
@@ -8,7 +7,6 @@ interface SocialLink {
     name: string;
     type: 'social' | 'friend';
 }
-
 const socialLinks: SocialLink[] = [
     {
         friendlyName: "Github",
@@ -59,25 +57,23 @@ const socialLinks: SocialLink[] = [
         type: 'friend'
     }
 ];
-
 const socialMediaLinks = socialLinks.filter(link => link.type === 'social');
 const friendLinks = socialLinks.filter(link => link.type === 'friend');
 ---
-
-<section class="space-y-4">
+<section class="min-h-[120px] space-y-4">
     <div class="flex flex-wrap items-end justify-end gap-x-2">
         <ul class="flex flex-1 items-center gap-x-2 sm:flex-initial">
             {socialMediaLinks.map(({ friendlyName, isWebmention, link, name }) => (
-                <li>
+                <li class="h-8 w-8">
                     <a
-                        class="inline-block sm:hover:text-link"
+                        class="inline-flex h-full w-full items-center justify-center sm:hover:text-link"
                         href={link}
                         rel={`noreferrer ${isWebmention ? "me authn" : ""}`}
                         target="_blank"
                     >
                         <Icon 
                             aria-hidden="true" 
-                            class="h-8 w-8" 
+                            class="h-full w-full" 
                             focusable="false" 
                             name={name} 
                         />
@@ -87,7 +83,6 @@ const friendLinks = socialLinks.filter(link => link.type === 'friend');
             ))}
         </ul>
     </div>
-
     {friendLinks.length > 0 && (
         <div class="flex flex-col items-center justify-center gap-4">
             <div class="relative w-full text-center">
@@ -100,16 +95,16 @@ const friendLinks = socialLinks.filter(link => link.type === 'friend');
             </div>
             <ul class="flex items-center gap-x-2">
                 {friendLinks.map(({ friendlyName, isWebmention, link, name }) => (
-                    <li>
+                    <li class="h-8 w-8">
                         <a
-                            class="inline-block sm:hover:text-link"
+                            class="inline-flex h-full w-full items-center justify-center sm:hover:text-link"
                             href={link}
                             rel={`noreferrer ${isWebmention ? "me authn" : ""}`}
                             target="_blank"
                         >
                             <Icon 
                                 aria-hidden="true" 
-                                class="h-8 w-8" 
+                                class="h-full w-full" 
                                 focusable="false" 
                                 name={name} 
                             />
