@@ -1,12 +1,14 @@
 ---
 import { Icon } from "astro-icon/components";
+
 interface SocialLink {
     friendlyName: string;
     isWebmention?: boolean;
     link: string;
     name: string;
-    type: 'social' | 'friend';
+    type?: 'social' | 'friend';
 }
+
 const socialLinks: SocialLink[] = [
     {
         friendlyName: "Github",
@@ -37,7 +39,10 @@ const socialLinks: SocialLink[] = [
         link: "https://music.163.com/#/user/home?id=449873508",
         name: "wyy",
         type: 'social'
-    },
+    }
+];
+
+const friendLinks: SocialLink[] = [
     {
         friendlyName: "f1",
         link: "https://www.cloudofficial.top",
@@ -57,14 +62,13 @@ const socialLinks: SocialLink[] = [
         type: 'friend'
     }
 ];
-const socialMediaLinks = socialLinks.filter(link => link.type === 'social');
-const friendLinks = socialLinks.filter(link => link.type === 'friend');
 ---
-<section class="min-h-[120px] space-y-4">
-    <div class="flex flex-wrap items-end justify-end gap-x-2">
+
+<div class="mt-8 flex min-h-[64px] flex-col gap-y-4">
+    <div class="flex flex-wrap items-end justify-end gap-x-2 text-right">
         <ul class="flex flex-1 items-center gap-x-2 sm:flex-initial">
-            {socialMediaLinks.map(({ friendlyName, isWebmention, link, name }) => (
-                <li class="h-8 w-8">
+            {socialLinks.map(({ friendlyName, isWebmention, link, name }) => (
+                <li class="h-8 w-8 flex items-center justify-center">
                     <a
                         class="inline-flex h-full w-full items-center justify-center sm:hover:text-link"
                         href={link}
@@ -83,19 +87,13 @@ const friendLinks = socialLinks.filter(link => link.type === 'friend');
             ))}
         </ul>
     </div>
+
     {friendLinks.length > 0 && (
-        <div class="flex flex-col items-center justify-center gap-4">
-            <div class="relative w-full text-center">
-                <div class="absolute inset-0 flex items-center">
-                    <div class="w-full border-t border-gray-300"></div>
-                </div>
-                <div class="relative">
-                    <span class="bg-white px-4 text-sm font-bold text-gray-600">友情链接</span>
-                </div>
-            </div>
-            <ul class="flex items-center gap-x-2">
+        <div class="flex flex-wrap items-end justify-end gap-x-2 text-right">
+            <p class="w-full text-center font-bold text-gray-600">友情链接</p>
+            <ul class="flex flex-1 items-center gap-x-2 sm:flex-initial">
                 {friendLinks.map(({ friendlyName, isWebmention, link, name }) => (
-                    <li class="h-8 w-8">
+                    <li class="h-8 w-8 flex items-center justify-center">
                         <a
                             class="inline-flex h-full w-full items-center justify-center sm:hover:text-link"
                             href={link}
@@ -115,4 +113,4 @@ const friendLinks = socialLinks.filter(link => link.type === 'friend');
             </ul>
         </div>
     )}
-</section>
+</div>
