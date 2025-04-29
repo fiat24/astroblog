@@ -1,5 +1,5 @@
 ---
-import { ClientRouter } from 'astro:transitions';
+<!-- 此处留空为import { ClientRouter } from 'astro:transitions'; -->
 import BaseHead from "@/components/BaseHead.astro";
 import SkipLink from "@/components/SkipLink.astro";
 import ThemeProvider from "@/components/ThemeProvider.astro";
@@ -20,7 +20,9 @@ const {
 <html class="scroll-smooth" lang={siteConfig.lang}>
 	<head>
 		<BaseHead articleDate={articleDate} description={description} ogImage={ogImage} title={title} />
- <ClientRouter />
+
+	<!-- 此处留空为<ClientRouter /> -->
+
 	</head>
 	<!-- 修改 max-w-6xl 最大宽度-->
 	<body
