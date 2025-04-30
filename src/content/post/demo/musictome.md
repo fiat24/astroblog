@@ -1,5 +1,5 @@
 ---
-title: "音乐之与我是什么？"
+title: "音乐之于我是什么？"
 description: "This post showcases using the markdown admonition feature in Astro Cactus"
 publishDate: "29 Apr 2025"
 tags: ["music", "aesthetics"]
