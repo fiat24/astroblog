@@ -29,33 +29,32 @@ const friendLinks: SocialLink[] = [
     { friendlyName: "cnblog", link: "https://www.cnblogs.com/faust6312", name: "logo", type: 'friend' }
 ];
 
-// 创建渲染链接的函数组件，减少重复代码
-const renderLinkItem = (link: SocialLink) => (
-    <li class="h-8 w-8">
-        <a
-            class="inline-flex h-full w-full items-center justify-center sm:hover:text-link"
-            href={link.link}
-            rel={`noreferrer ${link.isWebmention ? "me authn" : ""}`}
-            target="_blank"
-        >
-            <Icon 
-                aria-hidden="true" 
-                class="h-full w-full" 
-                focusable="false" 
-                name={link.name} 
-                loading="lazy" 
-            />
-            <span class="sr-only">{link.friendlyName}</span>
-        </a>
-    </li>
-);
+// 在Astro中不能直接使用JSX函数组件，需要在模板中直接使用
 ---
 
 <div class="mt-8 flex min-h-[64px] flex-col gap-y-4">
     <!-- 社交链接 -->
     <div class="flex flex-wrap items-end justify-end gap-x-2 text-right">
         <ul class="flex flex-1 flex-wrap items-center gap-2 sm:flex-initial">
-            {socialLinks.map(link => renderLinkItem(link))}
+            {socialLinks.map(link => (
+                <li class="h-8 w-8">
+                    <a
+                        class="inline-flex h-full w-full items-center justify-center sm:hover:text-link"
+                        href={link.link}
+                        rel={`noreferrer ${link.isWebmention ? "me authn" : ""}`}
+                        target="_blank"
+                    >
+                        <Icon 
+                            aria-hidden="true" 
+                            class="h-full w-full" 
+                            focusable="false" 
+                            name={link.name} 
+                            loading="lazy" 
+                        />
+                        <span class="sr-only">{link.friendlyName}</span>
+                    </a>
+                </li>
+            ))}
         </ul>
     </div>
 
@@ -64,7 +63,25 @@ const renderLinkItem = (link: SocialLink) => (
         <div class="flex flex-wrap items-end justify-end gap-x-2 text-right">
             <p class="w-full text-right font-bold text-gray-600">Friend Links</p>
             <ul class="flex flex-1 flex-wrap items-center gap-2 sm:flex-initial">
-                {friendLinks.map(link => renderLinkItem(link))}
+                {friendLinks.map(link => (
+                    <li class="h-8 w-8">
+                        <a
+                            class="inline-flex h-full w-full items-center justify-center sm:hover:text-link"
+                            href={link.link}
+                            rel={`noreferrer ${link.isWebmention ? "me authn" : ""}`}
+                            target="_blank"
+                        >
+                            <Icon 
+                                aria-hidden="true" 
+                                class="h-full w-full" 
+                                focusable="false" 
+                                name={link.name} 
+                                loading="lazy" 
+                            />
+                            <span class="sr-only">{link.friendlyName}</span>
+                        </a>
+                    </li>
+                ))}
             </ul>
         </div>
     )}
