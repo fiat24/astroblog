@@ -29,20 +29,44 @@ const friendLinks: SocialLink[] = [
     { friendlyName: "cnblog", link: "https://www.cnblogs.com/faust6312", name: "logo", type: 'friend' }
 ];
 
-// 在Astro中不能直接使用JSX函数组件，需要在模板中直接使用
+// 创建客户端脚本来延迟加载友链图标
+const script = `
+document.addEventListener('DOMContentLoaded', () => {
+    // 初始隐藏友链区域
+    const friendLinksContainer = document.getElementById('friend-links-container');
+    if (friendLinksContainer) {
+        friendLinksContainer.style.display = 'none';
+    }
+
+    // 添加友链切换按钮的点击事件
+    const toggleBtn = document.getElementById('toggle-friend-links');
+    if (toggleBtn && friendLinksContainer) {
+        toggleBtn.addEventListener('click', () => {
+            if (friendLinksContainer.style.display === 'none') {
+                friendLinksContainer.style.display = 'flex';
+                toggleBtn.textContent = '隐藏友链';
+            } else {
+                friendLinksContainer.style.display = 'none';
+                toggleBtn.textContent = '显示友链';
+            }
+        });
+    }
+});
+`;
 ---
 
 <div class="mt-8 flex min-h-[64px] flex-col gap-y-4">
-    <!-- 社交链接 -->
+    <!-- 社交链接 - 保持直接加载，因为这些是主要链接 -->
     <div class="flex flex-wrap items-end justify-end gap-x-2 text-right">
         <ul class="flex flex-1 flex-wrap items-center gap-2 sm:flex-initial">
-            {socialLinks.map(link => (
+            {socialLinks.map((link) => (
                 <li class="h-8 w-8">
                     <a
                         class="inline-flex h-full w-full items-center justify-center sm:hover:text-link"
                         href={link.link}
                         rel={`noreferrer ${link.isWebmention ? "me authn" : ""}`}
                         target="_blank"
+                        aria-label={link.friendlyName}
                     >
                         <Icon 
                             aria-hidden="true" 
@@ -50,39 +74,51 @@ const friendLinks: SocialLink[] = [
                             focusable="false" 
                             name={link.name} 
                             loading="lazy" 
+                            width="24"
+                            height="24"
                         />
-                        <span class="sr-only">{link.friendlyName}</span>
                     </a>
                 </li>
             ))}
         </ul>
     </div>
 
-    <!-- 友情链接 -->
+    <!-- 友情链接 - 采用按需加载方式 -->
     {friendLinks.length > 0 && (
-        <div class="flex flex-wrap items-end justify-end gap-x-2 text-right">
-            <p class="w-full text-right font-bold text-gray-600">Friend Links</p>
-            <ul class="flex flex-1 flex-wrap items-center gap-2 sm:flex-initial">
-                {friendLinks.map(link => (
-                    <li class="h-8 w-8">
-                        <a
-                            class="inline-flex h-full w-full items-center justify-center sm:hover:text-link"
-                            href={link.link}
-                            rel={`noreferrer ${link.isWebmention ? "me authn" : ""}`}
-                            target="_blank"
-                        >
-                            <Icon 
-                                aria-hidden="true" 
-                                class="h-full w-full" 
-                                focusable="false" 
-                                name={link.name} 
-                                loading="lazy" 
-                            />
-                            <span class="sr-only">{link.friendlyName}</span>
-                        </a>
-                    </li>
-                ))}
-            </ul>
-        </div>
+        <>
+            <div class="w-full text-right">
+                <button id="toggle-friend-links" class="px-2 py-1 text-sm font-bold text-gray-600 hover:text-gray-800">
+                    显示友链
+                </button>
+            </div>
+            <div id="friend-links-container" class="flex flex-wrap items-end justify-end gap-x-2 text-right">
+                <ul class="flex flex-1 flex-wrap items-center gap-2 sm:flex-initial">
+                    {friendLinks.map((link) => (
+                        <li class="h-8 w-8">
+                            <a
+                                class="inline-flex h-full w-full items-center justify-center sm:hover:text-link"
+                                href={link.link}
+                                rel={`noreferrer ${link.isWebmention ? "me authn" : ""}`}
+                                target="_blank"
+                                aria-label={link.friendlyName}
+                            >
+                                <Icon 
+                                    aria-hidden="true" 
+                                    class="h-full w-full" 
+                                    focusable="false" 
+                                    name={link.name} 
+                                    loading="lazy" 
+                                    width="24"
+                                    height="24"
+                                />
+                            </a>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        </>
     )}
 </div>
+
+<!-- 内联脚本以优化加载性能 -->
+<script set:html={script}></script>
