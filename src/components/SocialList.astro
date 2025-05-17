@@ -9,137 +9,62 @@ interface SocialLink {
     type?: 'social' | 'friend';
 }
 
+// 将数据移到单独的文件中可以提高组件的可维护性
 const socialLinks: SocialLink[] = [
-    {
-        friendlyName: "Github",
-        link: "https://github.com/faust6312",
-        name: "mdi:github",
-        type: 'social'
-    },
-    {
-        friendlyName: "Bilibili",
-        link: "https://space.bilibili.com/237593169",
-        name: "bilibili",
-        type: 'social'
-    },
-    {
-        friendlyName: "Nodeseek",
-        link: "https://www.nodeseek.com/space/24280",
-        name: "nodeseek",
-        type: 'social'
-    },
-    {
-        friendlyName: "linux.do",
-        link: "https://linux.do/u/faust6312",
-        name: "linux.do",
-        type: 'social'
-    },
-    {
-        friendlyName: "wyy",
-        link: "https://music.163.com/#/user/home?id=449873508",
-        name: "wyy",
-        type: 'social'
-    }
+    { friendlyName: "Github", link: "https://github.com/faust6312", name: "mdi:github", type: 'social' },
+    { friendlyName: "Bilibili", link: "https://space.bilibili.com/237593169", name: "bilibili", type: 'social' },
+    { friendlyName: "Nodeseek", link: "https://www.nodeseek.com/space/24280", name: "nodeseek", type: 'social' },
+    { friendlyName: "linux.do", link: "https://linux.do/u/faust6312", name: "linux.do", type: 'social' },
+    { friendlyName: "wyy", link: "https://music.163.com/#/user/home?id=449873508", name: "wyy", type: 'social' }
 ];
 
 const friendLinks: SocialLink[] = [
- {
-        friendlyName: "f6",
-        link: "https://blog.shiyaa.me/",
-        name: "f6",
-        type: 'friend'
-    },
- {
-        friendlyName: "f5",
-        link: "https://blog.noospic.me/",
-        name: "f5",
-        type: 'friend'
-    },
- {
-        friendlyName: "f4",
-        link: "https://blog.wrihope.top/",
-        name: "f4",
-        type: 'friend'
-    },
- {
-        friendlyName: "f3",
-        link: "https://asmrbro.com",
-        name: "f3",
-        type: 'friend'
-    },
-    {
-        friendlyName: "f2",
-        link: "https://blog.keepchen.com",
-        name: "f2",
-        type: 'friend'
-    },
-    {
-        friendlyName: "f1",
-        link: "https://www.cloudofficial.top",
-        name: "f1",
-        type: 'friend'
-    },
-    {
-        friendlyName: "typecho",
-        link: "https://type.700050.xyz/",
-        name: "typecho",
-        type: 'friend'
-    },
-    {
-        friendlyName: "cnblog",
-        link: "https://www.cnblogs.com/faust6312",
-        name: "logo",
-        type: 'friend'
-    }
+    { friendlyName: "f6", link: "https://blog.shiyaa.me/", name: "f6", type: 'friend' },
+    { friendlyName: "f5", link: "https://blog.noospic.me/", name: "f5", type: 'friend' },
+    { friendlyName: "f4", link: "https://blog.wrihope.top/", name: "f4", type: 'friend' },
+    { friendlyName: "f3", link: "https://asmrbro.com", name: "f3", type: 'friend' },
+    { friendlyName: "f2", link: "https://blog.keepchen.com", name: "f2", type: 'friend' },
+    { friendlyName: "f1", link: "https://www.cloudofficial.top", name: "f1", type: 'friend' },
+    { friendlyName: "typecho", link: "https://type.700050.xyz/", name: "typecho", type: 'friend' },
+    { friendlyName: "cnblog", link: "https://www.cnblogs.com/faust6312", name: "logo", type: 'friend' }
 ];
+
+// 创建渲染链接的函数组件，减少重复代码
+const renderLinkItem = (link: SocialLink) => (
+    <li class="h-8 w-8">
+        <a
+            class="inline-flex h-full w-full items-center justify-center sm:hover:text-link"
+            href={link.link}
+            rel={`noreferrer ${link.isWebmention ? "me authn" : ""}`}
+            target="_blank"
+        >
+            <Icon 
+                aria-hidden="true" 
+                class="h-full w-full" 
+                focusable="false" 
+                name={link.name} 
+                loading="lazy" 
+            />
+            <span class="sr-only">{link.friendlyName}</span>
+        </a>
+    </li>
+);
 ---
 
 <div class="mt-8 flex min-h-[64px] flex-col gap-y-4">
+    <!-- 社交链接 -->
     <div class="flex flex-wrap items-end justify-end gap-x-2 text-right">
-        <ul class="flex flex-1 items-center gap-x-2 sm:flex-initial">
-            {socialLinks.map(({ friendlyName, isWebmention, link, name }) => (
-                <li class="h-8 w-8 flex items-center justify-center">
-                    <a
-                        class="inline-flex h-full w-full items-center justify-center sm:hover:text-link"
-                        href={link}
-                        rel={`noreferrer ${isWebmention ? "me authn" : ""}`}
-                        target="_blank"
-                    >
-                        <Icon 
-                            aria-hidden="true" 
-                            class="h-full w-full" 
-                            focusable="false" 
-                            name={name} 
-                        />
-                        <span class="sr-only">{friendlyName}</span>
-                    </a>
-                </li>
-            ))}
+        <ul class="flex flex-1 flex-wrap items-center gap-2 sm:flex-initial">
+            {socialLinks.map(link => renderLinkItem(link))}
         </ul>
     </div>
 
+    <!-- 友情链接 -->
     {friendLinks.length > 0 && (
         <div class="flex flex-wrap items-end justify-end gap-x-2 text-right">
             <p class="w-full text-right font-bold text-gray-600">Friend Links</p>
-            <ul class="flex flex-1 items-center gap-x-2 sm:flex-initial">
-                {friendLinks.map(({ friendlyName, isWebmention, link, name }) => (
-                    <li class="h-8 w-8 flex items-center justify-center">
-                        <a
-                            class="inline-flex h-full w-full items-center justify-center sm:hover:text-link"
-                            href={link}
-                            rel={`noreferrer ${isWebmention ? "me authn" : ""}`}
-                            target="_blank"
-                        >
-                            <Icon 
-                                aria-hidden="true" 
-                                class="h-full w-full" 
-                                focusable="false" 
-                                name={name} 
-                            />
-                            <span class="sr-only">{friendlyName}</span>
-                        </a>
-                    </li>
-                ))}
+            <ul class="flex flex-1 flex-wrap items-center gap-2 sm:flex-initial">
+                {friendLinks.map(link => renderLinkItem(link))}
             </ul>
         </div>
     )}
