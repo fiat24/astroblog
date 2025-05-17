@@ -9,7 +9,6 @@ interface SocialLink {
     type?: 'social' | 'friend';
 }
 
-// 社交链接数据
 const socialLinks: SocialLink[] = [
     {
         friendlyName: "Github",
@@ -43,27 +42,26 @@ const socialLinks: SocialLink[] = [
     }
 ];
 
-// 友情链接数据
 const friendLinks: SocialLink[] = [
-    {
+ {
         friendlyName: "f6",
         link: "https://blog.shiyaa.me/",
         name: "f6",
         type: 'friend'
     },
-    {
+ {
         friendlyName: "f5",
         link: "https://blog.noospic.me/",
         name: "f5",
         type: 'friend'
     },
-    {
+ {
         friendlyName: "f4",
         link: "https://blog.wrihope.top/",
         name: "f4",
         type: 'friend'
     },
-    {
+ {
         friendlyName: "f3",
         link: "https://asmrbro.com",
         name: "f3",
@@ -94,68 +92,9 @@ const friendLinks: SocialLink[] = [
         type: 'friend'
     }
 ];
-
-// 简化预加载关键SVG图标
-const preloadIcons = () => {
-    return `
-        <link 
-            rel="preload" 
-            href="/icons/mdi:github.svg" 
-            as="image" 
-            type="image/svg+xml"
-        />
-        <link 
-            rel="preload" 
-            href="/icons/bilibili.svg" 
-            as="image" 
-            type="image/svg+xml"
-        />
-    `;
-};
-
-// 优化的客户端脚本 - 使用更可靠的方式加载所有图标
-const optimizeScript = `
-document.addEventListener('DOMContentLoaded', () => {
-    // 为所有图标添加正确的加载处理
-    function loadAllIcons() {
-        // 社交链接和友情链接的所有图标
-        document.querySelectorAll('.icon-container').forEach((container, index) => {
-            const iconName = container.getAttribute('data-icon');
-            if (iconName) {
-                // 直接使用astro-icon组件的方式加载
-                const img = document.createElement('img');
-                img.src = \`/icons/\${iconName}.svg\`;
-                img.className = 'h-full w-full';
-                img.setAttribute('loading', 'lazy');
-                img.setAttribute('width', '24');
-                img.setAttribute('height', '24');
-                
-                // 替换占位符
-                container.innerHTML = '';
-                container.appendChild(img);
-            }
-        });
-    }
-    
-    // 使用requestIdleCallback在浏览器空闲时加载图标，如果不支持则使用setTimeout
-    if ('requestIdleCallback' in window) {
-        requestIdleCallback(() => {
-            loadAllIcons();
-        }, { timeout: 2000 });
-    } else {
-        setTimeout(() => {
-            loadAllIcons();
-        }, 100);
-    }
-});
-`;
 ---
 
-<!-- 预加载关键SVG图标 -->
-<Fragment set:html={preloadIcons()} />
-
 <div class="mt-8 flex min-h-[64px] flex-col gap-y-4">
-    <!-- 社交链接 -->
     <div class="flex flex-wrap items-end justify-end gap-x-2 text-right">
         <ul class="flex flex-1 items-center gap-x-2 sm:flex-initial">
             {socialLinks.map(({ friendlyName, isWebmention, link, name }) => (
@@ -166,16 +105,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         rel={`noreferrer ${isWebmention ? "me authn" : ""}`}
                         target="_blank"
                     >
-                        <span class="icon-container h-full w-full" data-icon={name}>
-                            <Icon 
-                                aria-hidden="true" 
-                                class="h-full w-full" 
-                                focusable="false" 
-                                name={name}
-                                width="24" 
-                                height="24"
-                            />
-                        </span>
+                        <Icon 
+                            aria-hidden="true" 
+                            class="h-full w-full" 
+                            focusable="false" 
+                            name={name} 
+                        />
                         <span class="sr-only">{friendlyName}</span>
                     </a>
                 </li>
@@ -183,11 +118,10 @@ document.addEventListener('DOMContentLoaded', () => {
         </ul>
     </div>
 
-    <!-- 友情链接 - 确保所有图标都加载 -->
     {friendLinks.length > 0 && (
         <div class="flex flex-wrap items-end justify-end gap-x-2 text-right">
             <p class="w-full text-right font-bold text-gray-600">Friend Links</p>
-            <ul class="flex flex-1 flex-wrap items-center gap-x-2 sm:flex-initial">
+            <ul class="flex flex-1 items-center gap-x-2 sm:flex-initial">
                 {friendLinks.map(({ friendlyName, isWebmention, link, name }) => (
                     <li class="h-8 w-8 flex items-center justify-center">
                         <a
@@ -196,17 +130,12 @@ document.addEventListener('DOMContentLoaded', () => {
                             rel={`noreferrer ${isWebmention ? "me authn" : ""}`}
                             target="_blank"
                         >
-                            <!-- 使用统一的处理方式，不区分前两个和后面的 -->
-                            <span class="icon-container h-full w-full" data-icon={name}>
-                                <Icon 
-                                    aria-hidden="true" 
-                                    class="h-full w-full" 
-                                    focusable="false" 
-                                    name={name}
-                                    width="24" 
-                                    height="24"
-                                />
-                            </span>
+                            <Icon 
+                                aria-hidden="true" 
+                                class="h-full w-full" 
+                                focusable="false" 
+                                name={name} 
+                            />
                             <span class="sr-only">{friendlyName}</span>
                         </a>
                     </li>
@@ -215,25 +144,3 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
     )}
 </div>
-
-<!-- 优化脚本 -->
-<script set:html={optimizeScript}></script>
-
-<style>
-    /* 添加一些CSS优化 */
-    .icon-container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 24px;
-        min-height: 24px;
-    }
-    
-    /* 确保SVG不会引起布局偏移 */
-    .icon-container img,
-    .icon-container svg {
-        width: 100%;
-        height: 100%;
-        transition: opacity 0.2s ease-in-out;
-    }
-</style>
