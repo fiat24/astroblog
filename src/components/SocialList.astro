@@ -1,6 +1,5 @@
 ---
 import { Icon } from "astro-icon/components";
-// 假设SVG都放在public/icons/下
 
 interface SocialLink {
     friendlyName: string;
@@ -99,16 +98,16 @@ const friendLinks: SocialLink[] = [
     <div class="flex flex-wrap items-end justify-end gap-x-2 text-right">
         <ul class="flex flex-1 items-center gap-x-2 sm:flex-initial">
             {socialLinks.map(({ friendlyName, isWebmention, link, name }) => (
-                <li class="h-10 w-10 aspect-square flex items-center justify-center" key={name}>
+                <li class="h-10 w-10 aspect-[1/1] flex items-center justify-center" key={name}>
                     <a
-                        class="inline-flex h-full w-full aspect-square items-center justify-center sm:hover:text-link"
+                        class="inline-flex h-full w-full aspect-[1/1] items-center justify-center sm:hover:text-link"
                         href={link}
                         rel={`noreferrer ${isWebmention ? "me authn" : ""}`}
                         target="_blank"
                     >
                         <Icon 
                             aria-hidden="true" 
-                            class="h-full w-full aspect-square" 
+                            class="h-full w-full aspect-[1/1]" 
                             focusable="false" 
                             name={name} 
                             mode="inline"
@@ -125,9 +124,9 @@ const friendLinks: SocialLink[] = [
             <p class="w-full text-right font-bold text-gray-600">Friend Links</p>
             <ul class="flex flex-1 items-center gap-x-2 sm:flex-initial">
                 {friendLinks.map(({ friendlyName, isWebmention, link, name }) => (
-                    <li class="h-10 w-10 aspect-square flex items-center justify-center" key={name}>
+                    <li class="h-10 w-10 aspect-[1/1] flex items-center justify-center" key={name}>
                         <a
-                            class="inline-flex h-full w-full aspect-square items-center justify-center sm:hover:text-link"
+                            class="inline-flex h-full w-full aspect-[1/1] items-center justify-center sm:hover:text-link"
                             href={link}
                             rel={`noreferrer ${isWebmention ? "me authn" : ""}`}
                             target="_blank"
@@ -135,7 +134,7 @@ const friendLinks: SocialLink[] = [
                             <img 
                                 src={`/icons/${name}.svg`} 
                                 alt={friendlyName} 
-                                class="h-full w-full aspect-square object-contain"
+                                class="block h-full w-full aspect-[1/1] object-contain"
                                 loading="lazy"
                                 draggable="false"
                             />
