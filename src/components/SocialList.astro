@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import LocalSvg from "../components/LocalSvg.astro";
 
 interface SocialLink {
     friendlyName: string;
@@ -43,54 +44,14 @@ const socialLinks: SocialLink[] = [
 ];
 
 const friendLinks: SocialLink[] = [
-    {
-        friendlyName: "f6",
-        link: "https://blog.shiyaa.me/",
-        name: "f6",
-        type: 'friend'
-    },
-    {
-        friendlyName: "f5",
-        link: "https://blog.noospic.me/",
-        name: "f5",
-        type: 'friend'
-    },
-    {
-        friendlyName: "f4",
-        link: "https://blog.wrihope.top/",
-        name: "f4",
-        type: 'friend'
-    },
-    {
-        friendlyName: "f3",
-        link: "https://asmrbro.com",
-        name: "f3",
-        type: 'friend'
-    },
-    {
-        friendlyName: "f2",
-        link: "https://blog.keepchen.com",
-        name: "f2",
-        type: 'friend'
-    },
-    {
-        friendlyName: "f1",
-        link: "https://www.cloudofficial.top",
-        name: "f1",
-        type: 'friend'
-    },
-    {
-        friendlyName: "typecho",
-        link: "https://type.700050.xyz/",
-        name: "typecho",
-        type: 'friend'
-    },
-    {
-        friendlyName: "cnblog",
-        link: "https://www.cnblogs.com/faust6312",
-        name: "logo",
-        type: 'friend'
-    }
+    { friendlyName: "f6", link: "https://blog.shiyaa.me/", name: "f6", type: 'friend' },
+    { friendlyName: "f5", link: "https://blog.noospic.me/", name: "f5", type: 'friend' },
+    { friendlyName: "f4", link: "https://blog.wrihope.top/", name: "f4", type: 'friend' },
+    { friendlyName: "f3", link: "https://asmrbro.com", name: "f3", type: 'friend' },
+    { friendlyName: "f2", link: "https://blog.keepchen.com", name: "f2", type: 'friend' },
+    { friendlyName: "f1", link: "https://www.cloudofficial.top", name: "f1", type: 'friend' },
+    { friendlyName: "typecho", link: "https://type.700050.xyz/", name: "typecho", type: 'friend' },
+    { friendlyName: "cnblog", link: "https://www.cnblogs.com/faust6312", name: "logo", type: 'friend' }
 ];
 ---
 
@@ -131,12 +92,10 @@ const friendLinks: SocialLink[] = [
                             rel={`noreferrer ${isWebmention ? "me authn" : ""}`}
                             target="_blank"
                         >
-                            <img 
+                            <LocalSvg 
                                 src={`/icons/${name}.svg`} 
-                                alt={friendlyName} 
-                                class="block h-full w-full aspect-[1/1] object-contain"
-                                loading="lazy"
-                                draggable="false"
+                                alt={friendlyName}
+                                class="h-full w-full aspect-[1/1]"
                             />
                             <span class="sr-only">{friendlyName}</span>
                         </a>
