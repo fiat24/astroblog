@@ -54,6 +54,7 @@
 		"@tailwindcss/typography": "^0.5.15",
 		"@types/hast": "^3.0.4",
 		"@types/mdast": "^4.0.4",
+		"astro-netease-player": "^1.0.2",
 		"autoprefixer": "^10.4.20",
 		"pagefind": "^1.2.0",
 		"prettier": "^3.4.2",
