@@ -5,16 +5,11 @@ publishDate: 2025-07-04
 tags:
   - poem
 ogImage: /arch.jpg
-headings:
-  - 序
-  - 正文
 ---
 
 import MusicPlayer from 'astro-netease-player/MusicPlayer.astro';
 
-const { Content, headings } = await post.render();
-
-<MusicPlayer netease="327186" />
+<MusicPlayer netease={327186} />
 
 人们的看法太直接，
 
