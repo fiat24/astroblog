@@ -5,9 +5,12 @@ publishDate: 2025-07-04
 tags:
   - poem
 ogImage: /arch.jpg
----
 
 import MusicPlayer from 'astro-netease-player/MusicPlayer.astro';
+
+const { Content, headings } = await post.render();
+---
+<Content components={{ MusicPlayer: MusicPlayer }} />
 
 <MusicPlayer netease="327186" />
 
