@@ -1,5 +1,5 @@
 ---
-title: "VSCode终端字体显示"
+title: "VSCode终端显示问题"
 description: "This post showcases using the markdown admonition feature in Astro Cactus"
 publishDate: "12 Jul 2025"
 tags: ["vscode"]
