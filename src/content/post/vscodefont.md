@@ -12,12 +12,18 @@ tags: ["vscode"]
  说实话我都忘了什么时候配置的这个玩意（为什么我之前不解决这个问题。。。)
 ## 解决
 好吧，问了一下ChatGPT它说是字体不匹配导致了，把VSCode终端的字体改为和Powershell终端对应的就行了
+
 1.首先打开终端的json
+
 ![image.png](https://roim-picx-9nr.pages.dev/rest/WqozqVK.png)
+
 2.然后检索“Font”
+
 ![image.png](https://roim-picx-9nr.pages.dev/rest/ohvzqVK.png)
 复制字体名
+
 3.打开VSCode设置，检索“terminal.integrated.fontFamily”
+
 然后打开json
 ![image.png](https://roim-picx-9nr.pages.dev/rest/2CmARVK.png)
 填加上字体名就行了
