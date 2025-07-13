@@ -1,1 +1,1 @@
-详情见-->[Faust](https://blog.700050.xyz)
+here is my [blog](https://blog.qqwx.de)
