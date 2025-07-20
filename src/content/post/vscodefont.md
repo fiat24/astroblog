@@ -4,6 +4,11 @@ description: "This post showcases using the markdown admonition feature in Astro
 publishDate: "12 Jul 2025"
 tags: ["vscode"]
 ---
+
+import MusicPlayer from 'astro-netease-player/MusicPlayer.astro';
+
+<MusicPlayer netease="22638932" />
+
 ## 发现
  在使用VSCode终端的时候发现显示不出来该有的图标，是一个问号方框！
  ![image.png](https://roim-picx-9nr.pages.dev/rest/26mYqVK.png)
@@ -30,4 +35,5 @@ tags: ["vscode"]
 ![image.png](https://roim-picx-9nr.pages.dev/rest/dXeaRVK.png)
 ctrl+s保存，就会发现终端已经正常显示图标了！
 ![image.png](https://roim-picx-9nr.pages.dev/rest/rc7aRVK.png)
-
+---
+![Image_227565357857100.jpg](https://roim-picx-9nr.pages.dev/rest/HdUSkvK.jpeg)
