@@ -80,3 +80,10 @@ export interface Summary {
 }
 
 export type AdmonitionType = "tip" | "note" | "important" | "caution" | "warning";
+
+
+export interface SongUrlResponse {
+  data: {
+    url: string;
+  }[];
+}
