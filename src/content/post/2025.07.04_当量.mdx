@@ -7,9 +7,68 @@ tags:
 ogImage: /arch.jpg
 ---
 
-import MusicPlayer from 'astro-netease-player/MusicPlayer.astro';
+<!-- 播放器容器，注意带 client:load 让 Astro 在浏览器端初始化 -->
+<div id="aplayer" client:load />
 
-<MusicPlayer netease={1317475507} />
+<!-- 内联模块脚本（同样 client:load） -->
+<script type="module" client:load>
+  import APlayer from 'aplayer';          // 已随 astro-netease-player 安装，无需额外依赖
+  import axios from 'axios';
+
+  // NetEase 歌曲 ID；如有多首，可放数组按需切换
+  const NETEASE_ID = 1317475507;
+
+  // 创建空播放器，先不给 url，preload="none" 避免提前请求
+  const ap = new APlayer({
+    container: document.getElementById('aplayer'),
+    preload: 'none',
+    audio: [{
+      name: 'Track',
+      artist: 'Artist',
+      url: ''
+    }]
+  });
+
+  // 调用你在 /api/netease/url.ts 中转的接口，实时取有效直链
+  async function fetchUrl (id = NETEASE_ID) {
+    const { data } = await axios.get(`/api/netease/url?id=${id}`);
+    return data.url;
+  }
+
+  // 第一次点击播放时临时取链
+  ap.on('play', async () => {
+    if (!ap.list.audios[0].url) {
+      const fresh = await fetchUrl();
+      ap.list.audios[0].url = fresh;
+      ap.audio.src = fresh;
+      ap.audio.load();
+    }
+  });
+
+  // 超过 20 min / 请求 403 时报错，自动刷新直链并续播
+  ap.audio.addEventListener('error', async () => {
+    const fresh = await fetchUrl();
+    ap.list.audios[0].url = fresh;
+    ap.audio.src = fresh;
+    ap.audio.load();
+    ap.audio.play();
+  });
+
+  // 保险起见：19 min 后静默换一次 URL，防止长时间驻留失效
+  ap.on('play', () => {
+    if (ap._refreshTimer) clearTimeout(ap._refreshTimer);
+    ap._refreshTimer = setTimeout(async () => {
+      const fresh = await fetchUrl();
+      ap.list.audios[0].url = fresh;
+      // 若正在播放，热切换；否则只更新列表
+      if (!ap.audio.paused) {
+        ap.audio.src = fresh;
+        ap.audio.load();
+        ap.audio.play();
+      }
+    }, 19 * 60 * 1000);
+  });
+</script>
 
 人们的看法太直接，
 
@@ -54,4 +113,5 @@ import MusicPlayer from 'astro-netease-player/MusicPlayer.astro';
 心房、心室与陨石，
 
 分别等同于多少当量的炸药。
+
 ![pic3445.png](https://roim-picx-9nr.pages.dev/rest/tKNUzuK.png)
