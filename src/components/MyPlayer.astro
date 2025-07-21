@@ -9,6 +9,7 @@ const { songId, autoplay = false } = Astro.props;
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" />
 <script is:inline src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+<script is:inline src="https://cdn.jsdelivr.net/npm/hls.js/dist/hls.min.js"></script>
 <div id={`aplayer-${songId}`}></div>
 <script define:vars={{ songId, autoplay }}>
 	document.addEventListener("DOMContentLoaded", async () => {
@@ -41,6 +42,7 @@ const { songId, autoplay = false } = Astro.props;
 								artist: song.ar.map((a) => a.name).join("/"),
 								url: songUrl,
 								cover: song.al.picUrl,
+								type: "auto",
 							},
 						],
 					});

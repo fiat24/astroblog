@@ -52,12 +52,6 @@ export const request = async (method: string, url: string, data: object, options
         .toString()
         .padStart(4, '0')}`,
     };
-    const cookie = { ...options.cookie, __csrf: csrfToken };
-    const cookieString = Object.entries(cookie)
-      .filter(([, value]) => value !== undefined && value !== null)
-      .map(([key, value]) => `${key}=${value}`)
-      .join('; ');
-    headers.Cookie = cookieString;
     const text = JSON.stringify({ ...data, header });
     const message = `nobody${options.url}use${text}md5forencrypt`;
     const digest = CryptoJS.MD5(message).toString();

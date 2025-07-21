@@ -9,28 +9,30 @@ import type { SongUrlResponse } from '../types';
 export async function getSongUrl(id: number): Promise<string> {
   const data = {
     ids: `[${id}]`,
-    level: 'standard',
-    encodeType: 'flac',
+    level: 'sky',
+    encodeType: 'h5',
   };
 
   // eapi 请求
   const res = await request(
     'POST',
-    'https://interface.music.163.com/eapi/song/enhance/player/url/v1',
+    'https://interface3.music.163.com/eapi/song/enhance/player/url/v1',
     data,
     {
       crypto: 'eapi',
       url: '/api/song/enhance/player/url/v1',
-      cookie: {
-        MUSIC_U: process.env.NETEASE_COOKIE,
-      },
-    }
+    },
   ) as SongUrlResponse;
 
   const candidate = res?.data?.[0]?.url?.replace('http://', 'https://');
 
-  // 若拿不到高质量地址，退回公共外链（128 kbps，可能被版权限制）
-  return candidate || `https://music.163.com/song/media/outer/url?id=${id}.mp3`;
+  // 如果 eapi 返回的链接有效，则直接使用
+  if (candidate) {
+    return candidate;
+  }
+
+  // 否则，降级到标准 MP3 外链
+  return `https://music.163.com/song/media/outer/url?id=${id}.mp3`;
 }
 
 export async function getSongDetail(id: number) {
@@ -40,9 +42,6 @@ export async function getSongDetail(id: number) {
     { c: `[{"id":${id}}]` },
     {
       crypto: 'weapi',
-      cookie: {
-        MUSIC_U: process.env.NETEASE_COOKIE,
-      },
     },
   );
   return res;
