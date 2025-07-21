@@ -20,6 +20,17 @@ const { songId, autoplay = false } = Astro.props;
 				const song = detail.songs[0];
 
 				if (song) {
+					const response = await fetch(`/api/song-url/${songId}`);
+					if (!response.ok) {
+						throw new Error("Failed to fetch song URL");
+					}
+					const data = await response.json();
+					const songUrl = data.url;
+
+					if (!songUrl) {
+						throw new Error("Song URL not found in response");
+					}
+
 					new window.APlayer({
 						container: container,
 						autoplay: autoplay,
@@ -28,7 +39,7 @@ const { songId, autoplay = false } = Astro.props;
 							{
 								name: song.name,
 								artist: song.ar.map((a) => a.name).join("/"),
-								url: `/api/song-url/${songId}`,
+								url: songUrl,
 								cover: song.al.picUrl,
 							},
 						],

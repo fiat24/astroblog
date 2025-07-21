@@ -19,18 +19,19 @@ export const GET: APIRoute = async ({ params }) => {
     return new Response(JSON.stringify({ error: 'Song not found' }), { status: 404 });
   }
 
-  const secureSongUrl = songUrl.startsWith('http://') ? songUrl.replace('http://', 'https://') : songUrl;
+  const response = await fetch(songUrl, { redirect: 'manual' });
+  // NetEase returns a 302 response, we get the real url from the Location header
+  const finalUrl = response.headers.get('Location');
 
-  // 代理请求，直接流式传输音频
-  const response = await fetch(secureSongUrl);
-  
-  if (!response.ok) {
-    return new Response(JSON.stringify({ error: 'Failed to fetch song' }), { status: response.status });
+  if (!finalUrl) {
+    return new Response(JSON.stringify({ error: 'Failed to get final song url' }), { status: 500 });
   }
 
-  return new Response(response.body, {
-    headers: {
-      'Content-Type': response.headers.get('Content-Type') || 'audio/mpeg',
-    },
+  // 确保返回 https 协议
+  const secureFinalUrl = finalUrl.startsWith('http://') ? finalUrl.replace('http://', 'https://') : finalUrl;
+
+  return new Response(JSON.stringify({ url: secureFinalUrl }), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' },
   });
 };
