@@ -19,8 +19,10 @@ export const GET: APIRoute = async ({ params }) => {
     return new Response(JSON.stringify({ error: 'Song not found' }), { status: 404 });
   }
 
+  const secureSongUrl = songUrl.startsWith('http://') ? songUrl.replace('http://', 'https://') : songUrl;
+
   // 代理请求，直接流式传输音频
-  const response = await fetch(songUrl);
+  const response = await fetch(secureSongUrl);
   
   if (!response.ok) {
     return new Response(JSON.stringify({ error: 'Failed to fetch song' }), { status: response.status });
