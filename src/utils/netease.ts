@@ -21,7 +21,9 @@ export async function getSongUrl(id: number): Promise<string> {
     {
       crypto: 'eapi',
       url: '/api/song/enhance/player/url/v1',
-      cookie: {},
+      cookie: {
+        MUSIC_U: process.env.NETEASE_COOKIE,
+      },
     }
   ) as SongUrlResponse;
 
@@ -38,7 +40,9 @@ export async function getSongDetail(id: number) {
     { c: `[{"id":${id}}]` },
     {
       crypto: 'weapi',
-      cookie: {},
+      cookie: {
+        MUSIC_U: process.env.NETEASE_COOKIE,
+      },
     },
   );
   return res;
