@@ -13,12 +13,22 @@ export const GET: APIRoute = async ({ params }) => {
     )
   }
 
-  const url = await getSongUrl(id);
+  const songUrl = await getSongUrl(id);
 
-  return new Response(null, {
-    status: 302,
+  if (!songUrl) {
+    return new Response(JSON.stringify({ error: 'Song not found' }), { status: 404 });
+  }
+
+  // 代理请求，直接流式传输音频
+  const response = await fetch(songUrl);
+  
+  if (!response.ok) {
+    return new Response(JSON.stringify({ error: 'Failed to fetch song' }), { status: response.status });
+  }
+
+  return new Response(response.body, {
     headers: {
-      Location: url,
+      'Content-Type': response.headers.get('Content-Type') || 'audio/mpeg',
     },
   });
 };

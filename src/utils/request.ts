@@ -4,7 +4,7 @@ const iv = CryptoJS.enc.Utf8.parse('0102030405060708');
 const presetKey = CryptoJS.enc.Utf8.parse('0CoJUm6Qyw8W8jVd');
 const eapiKey = CryptoJS.enc.Utf8.parse('e82ckenh8dichen8');
 
-const aesEncrypt = (buffer: CryptoJS.lib.WordArray, mode: CryptoJS.mode.CBC, key: CryptoJS.lib.WordArray, iv: CryptoJS.lib.WordArray) => {
+const aesEncrypt = (buffer: CryptoJS.lib.WordArray, mode: any, key: CryptoJS.lib.WordArray, iv: CryptoJS.lib.WordArray) => {
   return CryptoJS.AES.encrypt(buffer, key, {
     iv: iv,
     mode: mode,
@@ -65,7 +65,7 @@ export const request = async (method: string, url: string, data: object, options
     const digest = CryptoJS.MD5(message).toString();
     const params = `${options.url}-36cd479b6b5-${text}-36cd479b6b5-${digest}`;
     body = `params=${encodeURIComponent(
-      aesEncrypt(CryptoJS.enc.Utf8.parse(params), CryptoJS.mode.ECB, eapiKey, '').toString()
+      aesEncrypt(CryptoJS.enc.Utf8.parse(params), CryptoJS.mode.ECB, eapiKey, CryptoJS.enc.Utf8.parse('')).toString()
     )}`;
   } else {
     body = new URLSearchParams(data as any).toString();
@@ -77,5 +77,13 @@ export const request = async (method: string, url: string, data: object, options
     body,
   });
 
-  return response.json();
+  if (response.status !== 200) {
+    return {};
+  }
+  const text = await response.text();
+  // If the response body is empty, return an empty object to avoid parsing errors.
+  if (!text) {
+    return {};
+  }
+  return JSON.parse(text);
 };

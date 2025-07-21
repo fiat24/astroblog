@@ -4,51 +4,41 @@
  * - id      网易云歌曲 ID（必填）
  * - autoplay 是否自动播放（可选，默认 false）
  */
-const { id, autoplay = false } = Astro.props;
+const { songId, autoplay = false } = Astro.props;
 ---
 
-<!-- APlayer 的样式；放这里可避免在所有页面手动引入 -->
-<link rel="stylesheet" href="https://unpkg.com/aplayer/dist/APlayer.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" />
+<script is:inline src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+<div id={`aplayer-${songId}`}></div>
+<script define:vars={{ songId, autoplay }}>
+	document.addEventListener("DOMContentLoaded", async () => {
+		const container = document.getElementById(`aplayer-${songId}`);
+		if (container && window.APlayer) {
+			try {
+				const res = await fetch(`/api/song-detail/${songId}`);
+				const detail = await res.json();
+				const song = detail.songs[0];
 
-<div id="aplayer-container" />
-
-<script client:load>
-  import APlayer from 'aplayer';
-
-  /** 拉取后端新鲜 URL（永不到期）*/
-  async function fetchSong(id) {
-    const res = await fetch(`/api/song-url/${id}`);
-    if (!res.ok) throw new Error('获取播放地址失败');
-    return (await res.json()).url;
-  }
-
-  /** 初始化播放器 */
-  async function init() {
-    const url  = await fetchSong(id);
-    const player = new APlayer({
-      container : document.getElementById('aplayer-container'),
-      autoplay  : autoplay,
-      preload   : 'none',
-      audio     : [{
-        name  : '歌曲',
-        artist: '网易云',
-        url,
-        cover : `https://p2.music.126.net/${id}.jpg?param=200y200`, // 简单封面占位
-      }],
-    });
-
-    /* URL 过期自动重试（极少出现，但以防万一）*/
-    player.on('error', async () => {
-      try {
-        const newUrl = await fetchSong(id);
-        player.list.audios[0].url = newUrl;
-        player.audio.src = newUrl;
-        player.audio.play();
-      } catch (e) {
-        console.error(e);
-      }
-    });
-  }
-
-  init();
+				if (song) {
+					new window.APlayer({
+						container: container,
+						autoplay: autoplay,
+						preload: "auto",
+						audio: [
+							{
+								name: song.name,
+								artist: song.ar.map((a) => a.name).join("/"),
+								url: `/api/song-url/${songId}`,
+								cover: song.al.picUrl,
+							},
+						],
+					});
+				} else {
+					console.error("Failed to load song details.");
+				}
+			} catch (error) {
+				console.error("Error fetching song details:", error);
+			}
+		}
+	});
 </script>

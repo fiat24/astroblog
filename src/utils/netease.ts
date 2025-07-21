@@ -30,3 +30,16 @@ export async function getSongUrl(id: number): Promise<string> {
   // 若拿不到高质量地址，退回公共外链（128 kbps，可能被版权限制）
   return candidate || `https://music.163.com/song/media/outer/url?id=${id}.mp3`;
 }
+
+export async function getSongDetail(id: number) {
+  const res = await request(
+    'POST',
+    'https://music.163.com/api/v3/song/detail',
+    { c: `[{"id":${id}}]` },
+    {
+      crypto: 'weapi',
+      cookie: {},
+    },
+  );
+  return res;
+}

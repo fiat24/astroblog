@@ -22,6 +22,7 @@ const post = defineCollection({
 				.optional(),
 			draft: z.boolean().default(false),
 			ogImage: z.string().optional(),
+			playerId: z.number().optional(),
 			tags: z.array(z.string()).default([]).transform(removeDupsAndLowerCase),
 			publishDate: z
 				.string()
