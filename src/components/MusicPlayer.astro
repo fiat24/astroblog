@@ -1,0 +1,190 @@
+---
+interface Song {
+  name: string
+  ar: { name: string }[]
+  al: { picUrl: string }
+}
+
+interface SongUrl {
+  url: string
+}
+
+export interface Props {
+  netease: string
+}
+
+const { netease } = Astro.props
+
+let song: Song | null = null
+let songUrl: SongUrl | null = null
+
+try {
+  const [songDetailResponse, songUrlResponse] = await Promise.all([
+    fetch(`${Astro.url.origin}/api/song-detail/${netease}`),
+    fetch(`${Astro.url.origin}/api/song-url/${netease}`),
+  ])
+
+  if (songDetailResponse.ok) {
+    const songDetailData = await songDetailResponse.json()
+    song = songDetailData.songs?.
+  }
+
+  if (songUrlResponse.ok) {
+    songUrl = await songUrlResponse.json()
+  }
+}
+catch (error) {
+  console.error('Error fetching song data:', error)
+}
+
+const songName = song?.name ?? '未知歌曲'
+const artistName = song?.ar?.?.name ?? '未知艺术家'
+const coverUrl = song?.al?.picUrl ?? '/placeholder.svg'
+const audioUrl = songUrl?.url ?? ''
+---
+
+{
+  song && songUrl && (
+    <div id="music-player" class="music-player">
+      <img src={coverUrl} alt="Album Cover" class="album-cover" />
+      <div class="song-info">
+        <div class="song-title">{songName}</div>
+        <div class="artist">{artistName}</div>
+      </div>
+      <div class="controls">
+        <button id="play-pause-btn" class="play-pause-btn">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="icon icon-tabler icons-tabler-outline icon-tabler-player-play"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M7 4v16l13 -8z" />
+          </svg>
+        </button>
+      </div>
+      <div class="progress-bar-container">
+        <div id="progress-bar" class="progress-bar" />
+      </div>
+      <audio id="audio-element" src={audioUrl} />
+    </div>
+  )
+}
+
+<style>
+  .music-player {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background-color: #f0f0f0;
+    padding: 1rem;
+    border-radius: 8px;
+    font-family: sans-serif;
+    max-width: 400px;
+    margin: 1rem auto;
+  }
+  .album-cover {
+    width: 60px;
+    height: 60px;
+    border-radius: 4px;
+  }
+  .song-info {
+    flex-grow: 1;
+  }
+  .song-title {
+    font-weight: bold;
+    font-size: 1rem;
+  }
+  .artist {
+    font-size: 0.875rem;
+    color: #555;
+  }
+  .controls {
+    display: flex;
+    align-items: center;
+  }
+  .play-pause-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .play-pause-btn svg {
+    width: 32px;
+    height: 32px;
+  }
+  .progress-bar-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background-color: #ddd;
+    border-radius: 0 0 8px 8px;
+  }
+  .progress-bar {
+    height: 100%;
+    width: 0;
+    background-color: #3498db;
+    border-radius: 0 0 0 8px;
+  }
+  #music-player {
+    position: relative;
+    padding-bottom: 1rem; /* space for progress bar */
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const player = document.getElementById('music-player')
+    if (!player) return
+
+    const audio = document.getElementById('audio-element') as HTMLAudioElement
+    const playPauseBtn = document.getElementById('play-pause-btn')
+    const progressBar = document.getElementById('progress-bar')
+
+    const playIcon = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-player-play"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 4v16l13 -8z" /></svg>
+    `
+    const pauseIcon = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-player-pause"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 5m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z" /><path d="M14 5m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z" /></svg>
+    `
+
+    playPauseBtn?.addEventListener('click', () => {
+      if (audio.paused) {
+        audio.play()
+        playPauseBtn.innerHTML = pauseIcon
+      }
+      else {
+        audio.pause()
+        playPauseBtn.innerHTML = playIcon
+      }
+    })
+
+    audio.addEventListener('timeupdate', () => {
+      if (progressBar) {
+        const progress = (audio.currentTime / audio.duration) * 100
+        progressBar.style.width = `${progress}%`
+      }
+    })
+
+    audio.addEventListener('ended', () => {
+      if (playPauseBtn) {
+        playPauseBtn.innerHTML = playIcon
+      }
+      if (progressBar) {
+        progressBar.style.width = '0%'
+      }
+    })
+  })
+</script>

@@ -1,8 +1,10 @@
 import type { APIRoute } from 'astro';
-import { getSongUrl } from '../../../utils/netease';
+
+const NETEASE_API_BASE_URL =
+  import.meta.env.NETEASE_API_BASE_URL || 'https://netease-cloud-music-api-binaryify.vercel.app';
 
 export const GET: APIRoute = async ({ params }) => {
-  const id = Number(params.id);
+  const { id } = params;
 
   if (!id) {
     return new Response(
@@ -10,28 +12,38 @@ export const GET: APIRoute = async ({ params }) => {
         error: 'Id is required',
       }),
       { status: 400 },
-    )
+    );
   }
 
-  const songUrl = await getSongUrl(id);
+  try {
+    const apiUrl = `${NETEASE_API_BASE_URL}/song/url/v1?id=${id}&level=lossless&timestamp=${Date.now()}`;
+    const apiRes = await fetch(apiUrl);
 
-  if (!songUrl) {
-    return new Response(JSON.stringify({ error: 'Song not found' }), { status: 404 });
+    if (!apiRes.ok) {
+      // 处理非 2xx 的 HTTP 状态
+      throw new Error(`Netease API responded with status: ${apiRes.status}`);
+    }
+
+    const data = await apiRes.json();
+
+    const songUrl = data.data?.[0]?.url?.replace(/^http:/, 'https:');
+    const expires = data.data?.[0]?.time;
+
+    if (!songUrl) {
+      return new Response(JSON.stringify({ error: 'Song not found in Netease API response' }), {
+        status: 404,
+      });
+    }
+
+    return new Response(JSON.stringify({ url: songUrl, expires }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (error) {
+    console.error(`[API Error] Failed to fetch song URL for id: ${id}`, error);
+    return new Response(JSON.stringify({ error: 'Failed to fetch song data from upstream API.' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
-
-  const response = await fetch(songUrl, { redirect: 'manual' });
-  // NetEase returns a 302 response, we get the real url from the Location header
-  const finalUrl = response.headers.get('Location');
-
-  if (!finalUrl) {
-    return new Response(JSON.stringify({ error: 'Failed to get final song url' }), { status: 500 });
-  }
-
-  // 确保返回 https 协议
-  const secureFinalUrl = finalUrl.startsWith('http://') ? finalUrl.replace('http://', 'https://') : finalUrl;
-
-  return new Response(JSON.stringify({ url: secureFinalUrl }), {
-    status: 200,
-    headers: { 'Content-Type': 'application/json' },
-  });
 };

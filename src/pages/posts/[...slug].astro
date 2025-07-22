@@ -1,5 +1,6 @@
 ---
 import PostLayout from "@/layouts/BlogPost.astro";
+import MusicPlayer from "astro-netease-player/MusicPlayer.astro";
 import { getAllPosts } from "@/data/post";
 import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
 export const prerender = true;
@@ -20,5 +21,5 @@ const { Content } = await render(post);
 ---
 
 <PostLayout post={post}>
-	<Content />
+	<Content components={{ MusicPlayer: MusicPlayer }} />
 </PostLayout>

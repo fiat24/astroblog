@@ -12,27 +12,34 @@ const { songId, autoplay = false } = Astro.props;
 <script is:inline src="https://cdn.jsdelivr.net/npm/hls.js/dist/hls.min.js"></script>
 <div id={`aplayer-${songId}`}></div>
 <script define:vars={{ songId, autoplay }}>
+	const NETEASE_API_BASE_URL =
+		import.meta.env.PUBLIC_NETEASE_API_BASE_URL ||
+		"https://netease-cloud-music-api-binaryify.vercel.app";
+
 	document.addEventListener("DOMContentLoaded", async () => {
 		const container = document.getElementById(`aplayer-${songId}`);
 		if (container && window.APlayer) {
 			try {
-				const res = await fetch(`/api/song-detail/${songId}`);
-				const detail = await res.json();
-				const song = detail.songs[0];
+				const detailRes = await fetch(`${NETEASE_API_BASE_URL}/song/detail?ids=${songId}`);
+				const detail = await detailRes.json();
+				const song = detail.songs?.[0];
 
 				if (song) {
-					const response = await fetch(`/api/song-url/${songId}`);
-					if (!response.ok) {
-						throw new Error("Failed to fetch song URL");
+					const urlRes = await fetch(
+						`${NETEASE_API_BASE_URL}/song/url/v1?id=${songId}&level=lossless`,
+					);
+					if (!urlRes.ok) {
+						throw new Error("Failed to fetch song URL from Netease API");
 					}
-					const data = await response.json();
-					const songUrl = data.url;
+					const urlData = await urlRes.json();
+					const songData = urlData.data?.[0];
 
-					if (!songUrl) {
-						throw new Error("Song URL not found in response");
+					if (!songData || !songData.url) {
+						throw new Error("Song URL not found in response from Netease API");
 					}
+					const songUrl = songData.url.replace(/^http:/, "https:");
 
-					new window.APlayer({
+					const ap = new window.APlayer({
 						container: container,
 						autoplay: autoplay,
 						preload: "auto",
@@ -46,11 +53,37 @@ const { songId, autoplay = false } = Astro.props;
 							},
 						],
 					});
+
+					if (ap) {
+						const refreshUrl = async () => {
+							try {
+								const apiUrl = `${NETEASE_API_BASE_URL}/song/url/v1?id=${songId}&level=lossless&timestamp=${Date.now()}`;
+								const res = await fetch(apiUrl);
+								if (!res.ok) throw new Error("Failed to fetch new URL from Netease API");
+
+								const data = await res.json();
+								const songData = data.data?.[0];
+
+								if (songData && songData.url) {
+									const newUrl = songData.url.replace(/^http:/, "https:");
+									console.log("Refreshing expired song URL from client...");
+									ap.list.audios[0].url = newUrl;
+									ap.audio.src = newUrl;
+									ap.audio.load();
+									ap.audio.play();
+								}
+							} catch (error) {
+								console.error("Error refreshing song URL:", error);
+							}
+						};
+
+						ap.on("error", refreshUrl);
+					}
 				} else {
-					console.error("Failed to load song details.");
+					console.error("Failed to load song details from Netease API.");
 				}
 			} catch (error) {
-				console.error("Error fetching song details:", error);
+				console.error("Error fetching song details from Netease API:", error);
 			}
 		}
 	});
