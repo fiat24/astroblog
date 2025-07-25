@@ -2,15 +2,10 @@
   "functions": {
     "src/pages/api/**/*.ts": {
       "maxDuration": 10,
-      "runtime": "nodejs18.x",
-      "regions": [
-        "hkg1"
-      ]
+      "runtime": "nodejs18.x"
     }
   },
   "headers": [
-
-  
     {
       "source": "/_astro/(.*)",
       "headers": [
@@ -18,8 +13,6 @@
         { "key": "Vercel-CDN-Cache-Control", "value": "max-age=31536000" }
       ]
     },
-
- 
     {
       "source": "/(.*\\.(?:css|js|png|jpg|jpeg|gif|svg|webp|ico|woff2?))",
       "headers": [
@@ -27,8 +20,6 @@
         { "key": "Vercel-CDN-Cache-Control", "value": "max-age=31536000" }
       ]
     },
-
-
     {
       "source": "/(.*)",
       "headers": [
