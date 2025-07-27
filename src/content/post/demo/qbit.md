@@ -142,4 +142,3 @@ https://github.com/XIU2/TrackersListCollection/blob/master/README-ZH.md
 ![image.png](https://roim-picx-9nr.pages.dev/rest/AcqQySK.png)
 现在你就获得了一个免费的磁力观影工具，可以告别吸血迅雷了!
 ![image.png](https://roim-picx-9nr.pages.dev/rest/engRySK.png)
-

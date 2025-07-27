@@ -42,7 +42,7 @@ const Comments = () => {
       {mounted ? (
         <Giscus
           id={id}
-          repo="unix4/astroblog"
+          repo="fiat24/astroblog"
           repoId="R_kgDONnB1Tg"
           category="Announcements"
           categoryId="DIC_kwDONnB1Ts4Cl1Oz"
