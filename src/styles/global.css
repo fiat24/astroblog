@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+
+	:root,
+	:root[data-theme="light"] {
+		color-scheme: light;
+		/* https://tailwindcss.com/docs/customizing-colors#using-css-variables */
+		--theme-bg: 0deg 0% 91%;
+		--theme-link: 172deg 18% 41%;
+		--theme-text: 203deg 11% 15%;
+		--theme-accent: 351deg 66% 48%;
+		--theme-accent-2: 0deg 0% 7%;
+		--theme-quote: 351deg 66% 48%;
+	}
+
+	:root[data-theme="dark"] {
+		color-scheme: dark;
+		--theme-bg: 0deg 0% 21%;
+		--theme-link: 330deg 49% 67%;
+		--theme-text: 220deg 3% 79%;
+		--theme-accent: 159deg 64% 45%;
+		--theme-accent-2: 0deg 0% 93%;
+		--theme-quote: 102deg 100% 86%;
+	}
+}
+
+.avatar-container {
+	position: relative;
+	/* 为提示文字提供定位上下文 */
+}
+
+.chicken-text {
+	position: absolute;
+	top: 50%;
+	right: 100%;
+	/* 定位到父容器的左边 */
+	transform: translateY(-50%);
+	margin-right: 1rem;
+	/* 与头像的间距 */
+
+	/* 样式 */
+	background-color: var(--color-gray-900);
+	color: var(--color-gray-100);
+	padding: 6px 12px;
+	border-radius: 6px;
+	white-space: nowrap;
+	font-size: 0.875rem;
+	z-index: 10;
+
+	/* 动画 */
+	opacity: 0;
+	transition: opacity 0.3s ease-in-out;
+	pointer-events: none;
+	/* 防止提示框干扰鼠标事件 */
+}
+
+.avatar-container:hover .chicken-text,
+site-search:hover .chicken-text,
+theme-toggle:hover .chicken-text,
+a.group:hover .chicken-text {
+	opacity: 1;
+}
+
+.chicken-text-right {
+	left: 100%;
+	right: auto;
+	margin-left: 1rem;
+	margin-right: 0;
+}
+
+.chicken-text--no-bg {
+	background-color: transparent;
+	color: inherit;
+}

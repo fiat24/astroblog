@@ -1,0 +1,25 @@
+---
+import PostLayout from "@/layouts/BlogPost.astro";
+import MusicPlayer from "astro-netease-player/MusicPlayer.astro";
+import { getAllPosts } from "@/data/post";
+import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
+export const prerender = true;
+
+export const getStaticPaths = (async () => {
+	const blogEntries = await getAllPosts();
+	return blogEntries.map((post) => ({
+		params: { slug: post.id },
+		props: { post },
+	}));
+}) satisfies GetStaticPaths;
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const { post } = Astro.props;
+import { render } from "astro:content";
+const { Content } = await render(post);
+---
+
+<PostLayout post={post}>
+	<Content components={{ MusicPlayer: MusicPlayer }} />
+</PostLayout>

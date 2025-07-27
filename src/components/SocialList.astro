@@ -1,0 +1,139 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface SocialLink {
+    friendlyName: string;
+    isWebmention?: boolean;
+    link: string;
+    name: string;
+    type?: 'social' | 'friend';
+}
+
+const socialLinks: SocialLink[] = [
+    {
+        friendlyName: "Github",
+        link: "https://github.com/unix4",
+        name: "mdi:github",
+        type: 'social'
+    },
+
+    {
+        friendlyName: "Nodeseek",
+        link: "https://www.nodeseek.com/space/24280",
+        name: "nodeseek",
+        type: 'social'
+    },
+    {
+        friendlyName: "linux.do",
+        link: "https://linux.do/u/faust6312",
+        name: "linux.do",
+        type: 'social'
+    },
+
+];
+
+const friendLinks: SocialLink[] = [
+    {
+        friendlyName: "f7",
+        link: "https://chrivs.com/",
+        name: "f7",
+        type: 'friend'
+    },
+    {
+        friendlyName: "f6",
+        link: "https://blog.shiyaa.me/",
+        name: "f6",
+        type: 'friend'
+    },
+    {
+        friendlyName: "f5",
+        link: "https://blog.noospic.me/",
+        name: "f5",
+        type: 'friend'
+    },
+    {
+        friendlyName: "f4",
+        link: "https://blog.wrihope.top/",
+        name: "f4",
+        type: 'friend'
+    },
+    {
+        friendlyName: "f3",
+        link: "https://asmrbro.com",
+        name: "f3",
+        type: 'friend'
+    },
+    {
+        friendlyName: "f2",
+        link: "https://blog.keepchen.com",
+        name: "f2",
+        type: 'friend'
+    },
+    {
+        friendlyName: "f1",
+        link: "https://www.cloudofficial.top",
+        name: "f1",
+        type: 'friend'
+    },
+
+    {
+        friendlyName: "cnblog",
+        link: "https://www.cnblogs.com/faust6312",
+        name: "logo",
+        type: 'friend'
+    }
+];
+---
+
+<div class="mt-8 flex min-h-[40px] flex-col gap-y-4">
+    <div class="flex flex-wrap items-end justify-end gap-x-2 text-right">
+        <ul class="flex flex-1 items-center gap-x-2 sm:flex-initial">
+            {socialLinks.map(({ friendlyName, isWebmention, link, name }) => (
+                <li class="h-10 w-10 aspect-[1/1] flex items-center justify-center" key={name}>
+                    <a
+                        class="inline-flex h-full w-full aspect-[1/1] items-center justify-center sm:hover:text-link"
+                        href={link}
+                        rel={`noreferrer ${isWebmention ? "me authn" : ""}`}
+                        target="_blank"
+                    >
+                        <Icon 
+                            aria-hidden="true" 
+                            class="h-full w-full aspect-[1/1]" 
+                            focusable="false" 
+                            name={name} 
+                            mode="inline"
+                        />
+                        <span class="sr-only">{friendlyName}</span>
+                    </a>
+                </li>
+            ))}
+        </ul>
+    </div>
+
+    {friendLinks.length > 0 && (
+        <div class="flex flex-wrap items-end justify-end gap-x-2 text-right">
+            <p class="w-full text-right font-bold text-gray-600">Friend Links</p>
+            <ul class="flex flex-1 items-center gap-x-2 sm:flex-initial">
+                {friendLinks.map(({ friendlyName, isWebmention, link, name }) => (
+                    <li class="h-10 w-10 aspect-[1/1] flex items-center justify-center" key={name}>
+                        <a
+                            class="inline-flex h-full w-full aspect-[1/1] items-center justify-center sm:hover:text-link"
+                            href={link}
+                            rel={`noreferrer ${isWebmention ? "me authn" : ""}`}
+                            target="_blank"
+                        >
+                            <img 
+                                src={`/icons/${name}.svg`} 
+                                alt={friendlyName} 
+                                class="block h-full w-full aspect-[1/1] object-contain"
+                                loading="lazy"
+                                draggable="false"
+                            />
+                            <span class="sr-only">{friendlyName}</span>
+                        </a>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    )}
+</div>
