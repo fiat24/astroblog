@@ -1,5 +1,5 @@
 ---
-import { ClientRouter } from 'astro:transitions';
+import { ClientRouter } from "astro:transitions";
 import BaseHead from "@/components/BaseHead.astro";
 import SkipLink from "@/components/SkipLink.astro";
 import ThemeProvider from "@/components/ThemeProvider.astro";
@@ -21,8 +21,8 @@ const {
 	<head>
 		<BaseHead articleDate={articleDate} description={description} ogImage={ogImage} title={title} />
 
-	<!-- 此处留空为<ClientRouter /> -->
-
+		<!-- 此处留空为<ClientRouter /> -->
+		<ClientRouter />
 	</head>
 	<!-- 修改 max-w-6xl 最大宽度-->
 	<body
