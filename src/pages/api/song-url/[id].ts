@@ -10,11 +10,17 @@ export const GET: APIRoute = async ({ params, request }) => {
   }
 
   try {
-    const response = await song_url_v1({
+    const options: any = {
       id: id,
-      level: "exhigh" as any,
-      cookie: request.headers.get("cookie") || "",
-    });
+      level: "exhigh",
+      cookie: request.headers.get("cookie"),
+    };
+
+    if (process.env.NETEASE_PROXY_URL) {
+      options.proxy = process.env.NETEASE_PROXY_URL;
+    }
+
+    const response = await song_url_v1(options);
 
     return new Response(JSON.stringify(response.body), {
       status: response.status,
@@ -23,8 +29,8 @@ export const GET: APIRoute = async ({ params, request }) => {
         "Set-Cookie": response.cookie.join("; "),
       },
     });
-  } catch (e) {
-    const error = e as Error;
+  } catch (error: any) {
+    console.error("Error fetching song url:", error);
     return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   }
 };
