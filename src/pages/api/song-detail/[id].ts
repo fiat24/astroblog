@@ -1,24 +1,29 @@
-import type { APIRoute } from 'astro'
-import { getSongInfo } from '@/utils/netease/song'
+import type { APIRoute } from "astro";
+import NeteaseCloudMusicApi from "NeteaseCloudMusicApi";
+
+const { song_detail } = NeteaseCloudMusicApi;
 
 export const GET: APIRoute = async ({ params, request }) => {
-  const { id } = params
+  const { id } = params;
   if (!id) {
-    return new Response(JSON.stringify({ error: 'id is required' }), {
-      status: 400,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    return new Response(JSON.stringify({ error: "缺少歌曲ID" }), { status: 400 });
   }
 
-  const cookie = request.headers.get('cookie')
-  const data = await getSongInfo(id, cookie || undefined)
+  try {
+    const response = await song_detail({
+      ids: id,
+      cookie: request.headers.get("cookie") || "",
+    });
 
-  return new Response(JSON.stringify(data), {
-    status: 200,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-}
+    return new Response(JSON.stringify(response.body), {
+      status: response.status,
+      headers: {
+        "Content-Type": "application/json",
+        "Set-Cookie": response.cookie.join("; "),
+      },
+    });
+  } catch (e) {
+    const error = e as Error;
+    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+  }
+};

@@ -21,6 +21,8 @@ export const siteConfig: SiteConfig = {
 	ogLocale: "zh-CN",
 	// Used to construct the meta title property found in src/components/BaseHead.astro L:11, and webmanifest name found in astro.config.ts L:42
 	title: "Faust",
+	// Used to generate deployment URLs
+	url: "https://ewww.fun",
 };
 
 // Used to generate links in both the Header & Footer.
